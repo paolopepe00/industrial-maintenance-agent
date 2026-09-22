@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+pydantic
+ollama
+langchain
+langchain-text-splitters
+langchain-community
+langchain-ollama
+chromadb
+pypdf
