@@ -1,7 +1,7 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 import random
+from langchain_core.tools import tool
 
-# Dati finti in memoria, coerenti con i manuali RAG (pump P-102)
 _MACHINES = {
     "P-102": {
         "type": "centrifugal_pump",
@@ -11,16 +11,18 @@ _MACHINES = {
 }
 
 
+@tool
 def get_machine_status(machine_id: str) -> dict:
-    """Return current operational status of a machine."""
+    """Get current operational status of a machine."""
     machine = _MACHINES.get(machine_id)
     if not machine:
         return {"error": f"Machine {machine_id} not found"}
     return {"machine_id": machine_id, **machine}
 
 
+@tool
 def get_sensor_data(machine_id: str) -> dict:
-    """Return latest sensor readings for a machine."""
+    """Get latest sensor readings (temperature, vibration, pressure) for a machine."""
     if machine_id not in _MACHINES:
         return {"error": f"Machine {machine_id} not found"}
     return {
@@ -35,8 +37,9 @@ def get_sensor_data(machine_id: str) -> dict:
     }
 
 
+@tool
 def get_maintenance_history(machine_id: str) -> dict:
-    """Return recent maintenance events for a machine."""
+    """Get recent maintenance events for a machine."""
     if machine_id not in _MACHINES:
         return {"error": f"Machine {machine_id} not found"}
     return {
@@ -48,15 +51,17 @@ def get_maintenance_history(machine_id: str) -> dict:
     }
 
 
+@tool
 def get_open_work_orders(machine_id: str) -> dict:
-    """Return currently open work orders for a machine."""
+    """Get currently open work orders for a machine."""
     if machine_id not in _MACHINES:
         return {"error": f"Machine {machine_id} not found"}
     return {"machine_id": machine_id, "open_work_orders": []}
 
 
+@tool
 def create_work_order(machine_id: str, description: str) -> dict:
-    """Create a new maintenance work order for a machine."""
+    """Create a maintenance work order for a machine. Only call this if the user explicitly confirms they want one created."""
     if machine_id not in _MACHINES:
         return {"error": f"Machine {machine_id} not found"}
     work_order_id = f"WO-{random.randint(1000, 9999)}"
@@ -67,3 +72,7 @@ def create_work_order(machine_id: str, description: str) -> dict:
         "status": "open",
         "created_at": datetime.now().isoformat(),
     }
+
+
+TOOLS = [get_machine_status, get_sensor_data, get_maintenance_history,
+         get_open_work_orders, create_work_order]
