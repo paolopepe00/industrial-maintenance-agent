@@ -7,16 +7,23 @@ from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_ollama import ChatOllama
 
 from src.rag.retriever import get_retriever
-from src.tools.cmms import TOOLS
 
-from langgraph.checkpoint.memory import MemorySaver
-
+from src.tools.cmms import (
+    get_machine_status, get_sensor_data, get_maintenance_history,
+    get_open_work_orders, create_work_order,
+)
 
 OLLAMA_MODEL = "qwen2.5:7b"
 
 retriever = get_retriever()
 llm = ChatOllama(model=OLLAMA_MODEL, temperature=0, num_predict=512)
-llm_with_tools = llm.bind_tools(TOOLS)
+
+READ_TOOLS = [get_machine_status, get_sensor_data, get_maintenance_history, get_open_work_orders]
+WRITE_TOOLS = [create_work_order]
+ALL_TOOLS = READ_TOOLS + WRITE_TOOLS
+WRITE_TOOL_NAMES = {t.name for t in WRITE_TOOLS}
+
+llm_with_tools = llm.bind_tools(ALL_TOOLS)
 
 
 class AgentState(TypedDict):
@@ -52,11 +59,14 @@ Reference documentation:
 
 
 def should_continue(state: AgentState) -> str:
-    """Need Information? — routing condizionale."""
+    """Need Information? — routing condizionale, distingue lettura da scrittura."""
     last_message = state["messages"][-1]
-    if getattr(last_message, "tool_calls", None):
-        return "tools"
-    return END
+    tool_calls = getattr(last_message, "tool_calls", None)
+    if not tool_calls:
+        return END
+    if any(call["name"] in WRITE_TOOL_NAMES for call in tool_calls):
+        return "write_tools"
+    return "read_tools"
 
 
 def build_graph(checkpointer=None):
@@ -64,14 +74,19 @@ def build_graph(checkpointer=None):
 
     workflow.add_node("retrieve", retrieve_node)
     workflow.add_node("agent", agent_node)
-    workflow.add_node("tools", ToolNode(TOOLS))
+    workflow.add_node("read_tools", ToolNode(READ_TOOLS))
+    workflow.add_node("write_tools", ToolNode(WRITE_TOOLS))
 
     workflow.set_entry_point("retrieve")
     workflow.add_edge("retrieve", "agent")
-    workflow.add_conditional_edges("agent", should_continue, {"tools": "tools", END: END})
-    workflow.add_edge("tools", "agent")
+    workflow.add_conditional_edges(
+        "agent", should_continue,
+        {"read_tools": "read_tools", "write_tools": "write_tools", END: END},
+    )
+    workflow.add_edge("read_tools", "agent")
+    workflow.add_edge("write_tools", "agent")
 
-    return workflow.compile(checkpointer=checkpointer)
+    return workflow.compile(checkpointer=checkpointer, interrupt_before=["write_tools"])
 
 
 graph = build_graph()
