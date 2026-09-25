@@ -31,15 +31,12 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile.agent
-    ports:
-      - "8110:8000"
+    network_mode: host
     environment:
-      CMMS_BASE_URL: http://cmms:8001
-      OLLAMA_HOST: http://host.docker.internal:11434
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      CMMS_BASE_URL: http://localhost:8111
+      OLLAMA_HOST: http://localhost:11434
     depends_on:
       - cmms
-
+      
 volumes:
   pgdata:
