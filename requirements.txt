@@ -10,3 +10,6 @@ chromadb
 pypdf
 langgraph
 langgraph-cli[inmem]
+sqlalchemy
+psycopg2-binary
+requests

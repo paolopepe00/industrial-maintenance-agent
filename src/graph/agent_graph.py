@@ -9,6 +9,9 @@ from langchain_ollama import ChatOllama
 from src.rag.retriever import get_retriever
 from src.tools.cmms import TOOLS
 
+from langgraph.checkpoint.memory import MemorySaver
+
+
 OLLAMA_MODEL = "qwen2.5:7b"
 
 retriever = get_retriever()
@@ -56,7 +59,7 @@ def should_continue(state: AgentState) -> str:
     return END
 
 
-def build_graph():
+def build_graph(checkpointer=None):
     workflow = StateGraph(AgentState)
 
     workflow.add_node("retrieve", retrieve_node)
@@ -66,9 +69,9 @@ def build_graph():
     workflow.set_entry_point("retrieve")
     workflow.add_edge("retrieve", "agent")
     workflow.add_conditional_edges("agent", should_continue, {"tools": "tools", END: END})
-    workflow.add_edge("tools", "agent")  # dopo il tool, torna all'agent per decidere il prossimo step
+    workflow.add_edge("tools", "agent")
 
-    return workflow.compile()
+    return workflow.compile(checkpointer=checkpointer)
 
 
 graph = build_graph()

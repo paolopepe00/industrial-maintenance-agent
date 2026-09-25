@@ -1,5 +1,5 @@
 from langchain_ollama import OllamaEmbeddings
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma 
 
 EMBED_MODEL = "nomic-embed-text"
 PERSIST_DIR = "vector_db"
