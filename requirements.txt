@@ -6,6 +6,7 @@ langchain
 langchain-text-splitters
 langchain-community
 langchain-ollama
+langchain-chroma
 chromadb
 pypdf
 langgraph
@@ -16,3 +17,4 @@ requests
 pytest
 pytest-mock
 httpx
+pandas

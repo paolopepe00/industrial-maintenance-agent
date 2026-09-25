@@ -1,0 +1,222 @@
+[
+  {
+    "id": "eval-01",
+    "category": "diagnosis_reasoning",
+    "question": "P-102 has abnormal vibrations, what is going on?",
+    "passed": false,
+    "tool_selection_ok": true,
+    "expected_tools": [
+      "get_sensor_data"
+    ],
+    "called_tools": [
+      "get_maintenance_history",
+      "get_sensor_data"
+    ],
+    "keyword_ok": true,
+    "missing_keywords": [],
+    "no_forbidden": false,
+    "forbidden_found": [
+      "imbalance"
+    ],
+    "latency_s": 3.92,
+    "answer": "The maintenance history for P-102 shows that a laser alignment check was performed on March 2, 2026, and it was within tolerance. However, there has been no recent record of shaft misalignment issues.\n\nGiven this information, the most likely cause of the abnormal vibration at 2x running speed is an issue with the impeller. Let's inspect the impeller for any signs of wear or debris buildup.\n\nI will now create a work order to address the potential impeller imbalance and schedule a detailed inspection.\n\n\nVuoi procedere con: create_work_order({'machine_id': 'P-102', 'description': 'Inspect impeller for wear/debris and perform alignment check if necessary.'})? Conferma su /chat/confirm."
+  },
+  {
+    "id": "eval-02",
+    "category": "data_retrieval",
+    "question": "What is the current bearing temperature of P-102?",
+    "passed": true,
+    "tool_selection_ok": true,
+    "expected_tools": [
+      "get_sensor_data"
+    ],
+    "called_tools": [
+      "get_sensor_data"
+    ],
+    "keyword_ok": true,
+    "missing_keywords": [],
+    "no_forbidden": true,
+    "forbidden_found": [],
+    "latency_s": 1.23,
+    "answer": "The current bearing temperatures for P-102 are as follows:\n- Drive end bearing temperature: 78.5\u00b0C\n- Non-drive end bearing temperature: 71.2\u00b0C\n\nThese values are within the normal range, but close to the alarm threshold of 80\u00b0C.\n\nThe vibration is at 2x running speed with an RMS velocity of 6.8 mm/s, which exceeds the normal range of 4.5 mm/s and indicates a potential issue such as coupling misalignment or bearing wear. Given that the vibration frequency matches the documentation for 2x running speed, this suggests that there might be a problem with the shaft alignment or bearing condition.\n\nThe motor winding temperature is 118.0\u00b0C, which is also close to the alarm threshold of 120\u00b0C but not yet in an alarming state.\n\nBased on these readings, I recommend reviewing the maintenance history for recent lubrication or alignment work and checking the shaft alignment with a laser alignment tool if necessary."
+  },
+  {
+    "id": "eval-03",
+    "category": "data_retrieval",
+    "question": "Has P-102 had any recent maintenance?",
+    "passed": true,
+    "tool_selection_ok": true,
+    "expected_tools": [
+      "get_maintenance_history"
+    ],
+    "called_tools": [
+      "get_maintenance_history"
+    ],
+    "keyword_ok": true,
+    "missing_keywords": [],
+    "no_forbidden": true,
+    "forbidden_found": [],
+    "latency_s": 0.87,
+    "answer": "P-102 has had two recent maintenance events:\n1. On 2026-03-02, a laser alignment check was performed by L. Bianchi and the result was within tolerance.\n2. On 2026-06-15, bearing re-grease was carried out by M. Rossi.\n\nNeither of these actions indicate any immediate issues, but it would be prudent to review the vibration data for P-102 to ensure there are no developing problems. Would you like me to fetch the current vibration readings?"
+  },
+  {
+    "id": "eval-04",
+    "category": "rag_only",
+    "question": "What PPE is required to work near P-102?",
+    "passed": true,
+    "tool_selection_ok": true,
+    "expected_tools": [],
+    "called_tools": [],
+    "keyword_ok": true,
+    "missing_keywords": [],
+    "no_forbidden": true,
+    "forbidden_found": [],
+    "latency_s": 0.74,
+    "answer": "According to the Plant Safety Manual \u2014 Rotating Equipment, for areas where the noise level exceeds a certain threshold, minimum Personal Protective Equipment (PPE) includes safety glasses and hearing protection. However, the specific noise level threshold is not provided in the manual excerpt you've shared. \n\nTo determine if additional PPE is required, we would need to measure the noise level in the area around Pump P-102. If the noise level exceeds the threshold mentioned (which isn't specified here), then hearing protection must be worn.\n\nFor now, based on the information provided, safety glasses and hearing protection are recommended when working near P-102 if the noise level is above the unspecified threshold."
+  },
+  {
+    "id": "eval-05",
+    "category": "rag_precision",
+    "question": "At what bearing temperature should P-102 be shut down immediately?",
+    "passed": false,
+    "tool_selection_ok": true,
+    "expected_tools": [],
+    "called_tools": [],
+    "keyword_ok": false,
+    "missing_keywords": [
+      "90"
+    ],
+    "no_forbidden": false,
+    "forbidden_found": [
+      "80"
+    ],
+    "latency_s": 0.42,
+    "answer": "According to the technical manual for Pump P-102, the alarm threshold for bearing temperature at the drive end and non-drive end is 80\u00b0C. Therefore, if either of these temperatures exceeds 80\u00b0C, immediate action should be taken, including potentially shutting down the pump to prevent damage."
+  },
+  {
+    "id": "eval-06",
+    "category": "diagnosis_reasoning",
+    "question": "Is vibration at 1x running speed usually caused by misalignment or imbalance?",
+    "passed": false,
+    "tool_selection_ok": true,
+    "expected_tools": [],
+    "called_tools": [
+      "get_maintenance_history",
+      "get_sensor_data",
+      "get_machine_status"
+    ],
+    "keyword_ok": false,
+    "missing_keywords": [
+      "imbalance"
+    ],
+    "no_forbidden": true,
+    "forbidden_found": [],
+    "latency_s": 2.79,
+    "answer": "The maintenance history for machine P-102 indicates that a laser alignment check was performed on 2026-03-02, and the result was within tolerance. This suggests that recent misalignment issues have not been identified.\n\nGiven the current symptoms of vibration at 2x running speed and elevated motor winding temperature, it is likely that there has been some change in the alignment since the last check. We should perform a laser alignment check to verify the current condition of the coupling between the pump and motor shafts.\n\nBefore proceeding with the alignment check, let's also inspect the impeller for any signs of wear or debris buildup, as this could be another potential cause of 1x running speed vibration.\n\nLet's create a work order to perform a laser alignment check on P-102.\n\n\nVuoi procedere con: create_work_order({'machine_id': 'P-102', 'description': 'Perform laser alignment check and impeller inspection on P-102'})? Conferma su /chat/confirm."
+  },
+  {
+    "id": "eval-07",
+    "category": "data_retrieval",
+    "question": "Does P-102 currently have any open work orders?",
+    "passed": true,
+    "tool_selection_ok": true,
+    "expected_tools": [
+      "get_open_work_orders"
+    ],
+    "called_tools": [
+      "get_open_work_orders"
+    ],
+    "keyword_ok": true,
+    "missing_keywords": [],
+    "no_forbidden": true,
+    "forbidden_found": [],
+    "latency_s": 1.1,
+    "answer": "P-102 currently has several open work orders, including:\n- WO-E98BA4: Inspect impeller for wear/debris and perform alignment check if necessary.\n- WO-ACDAD7: Inspect impeller for wear/debris and perform alignment check if necessary; follow up on 2x running speed vibration and elevated motor winding temperature.\n- WO-52A616: Shaft alignment check and lubrication inspection due to 2x running speed vibration and elevated bearing temperature.\n\nThese work orders suggest that there are issues with the pump, such as high vibration at twice the operating speed (7.1 mm/s) and elevated motor winding temperatures (>155\u00b0C). \n\nWould you like me to create a new work order based on these findings?"
+  },
+  {
+    "id": "eval-08",
+    "category": "rag_precision",
+    "question": "What is the recommended re-greasing interval for P-102's bearings?",
+    "passed": true,
+    "tool_selection_ok": true,
+    "expected_tools": [],
+    "called_tools": [],
+    "keyword_ok": true,
+    "missing_keywords": [],
+    "no_forbidden": true,
+    "forbidden_found": [],
+    "latency_s": 0.33,
+    "answer": "The recommended re-greasing interval for P-102's bearings is every 2000 operating hours. This aligns with standard maintenance practices to ensure optimal performance and longevity of the equipment."
+  },
+  {
+    "id": "eval-09",
+    "category": "rag_precision",
+    "question": "What are the typical causes of low discharge pressure on P-102?",
+    "passed": true,
+    "tool_selection_ok": true,
+    "expected_tools": [],
+    "called_tools": [],
+    "keyword_ok": true,
+    "missing_keywords": [],
+    "no_forbidden": true,
+    "forbidden_found": [],
+    "latency_s": 0.67,
+    "answer": "Based on the documentation provided, low discharge pressure with normal motor current on Pump P-102 can typically indicate one or more of the following issues:\n\n1. A clogged suction strainer.\n2. A partially closed suction valve.\n3. Internal wear such as worn wear rings or impeller erosion, which reduces pump efficiency.\n\nIf you observe high motor current along with low discharge pressure, it could suggest a partially blocked discharge line.\n\nWould you like to proceed with checking the current status of P-102? I can retrieve the latest sensor readings and operational data for us."
+  },
+  {
+    "id": "eval-10",
+    "category": "rag_precision",
+    "question": "Who do I contact in case of fire near the pump area?",
+    "passed": false,
+    "tool_selection_ok": true,
+    "expected_tools": [],
+    "called_tools": [],
+    "keyword_ok": false,
+    "missing_keywords": [
+      "4520"
+    ],
+    "no_forbidden": true,
+    "forbidden_found": [],
+    "latency_s": 0.55,
+    "answer": "In case of fire or uncontrolled leak, you should activate the nearest emergency stop and follow the plant evacuation plan posted at each access point. Additionally, you can contact the shift supervisor on extension 4501 for immediate assistance.\n\nFor your safety, please ensure you have the necessary personal protective equipment (PPE) as per the guidelines provided. If there is a fire near the pump area, do not approach the affected machinery and evacuate according to the posted evacuation plan."
+  },
+  {
+    "id": "eval-11",
+    "category": "data_retrieval",
+    "question": "What is the status of machine P-102?",
+    "passed": true,
+    "tool_selection_ok": true,
+    "expected_tools": [
+      "get_machine_status"
+    ],
+    "called_tools": [
+      "get_machine_status"
+    ],
+    "keyword_ok": true,
+    "missing_keywords": [],
+    "no_forbidden": true,
+    "forbidden_found": [],
+    "latency_s": 0.48,
+    "answer": "Machine P-102 is currently running and located in the secondary cooling loop of Building B. Would you like to check the sensor data or maintenance history for this pump?"
+  },
+  {
+    "id": "eval-12",
+    "category": "diagnosis_reasoning",
+    "question": "The bearing temperature just went to 95 C, what should happen?",
+    "passed": false,
+    "tool_selection_ok": true,
+    "expected_tools": [],
+    "called_tools": [
+      "get_maintenance_history",
+      "get_sensor_data"
+    ],
+    "keyword_ok": false,
+    "missing_keywords": [
+      "shutdown"
+    ],
+    "no_forbidden": true,
+    "forbidden_found": [],
+    "latency_s": 2.29,
+    "answer": "The latest sensor readings for machine P-102 show the following:\n\n- **Bearing Temperature (Drive End):** 78.5\u00b0C\n- **Bearing Temperature (Non-Drive End):** 71.2\u00b0C\n- **Vibration RMS:** 6.8 mm/s at 2x running speed\n- **Discharge Pressure:** 4.1 bar\n- **Motor Winding Temperature:** 118.0\u00b0C\n\nThe motor winding temperature is within the critical range, but the bearing temperatures are slightly elevated. The vibration is noted to be at 2x running speed.\n\nBased on the reference documentation, a steady rise in bearing temperature combined with high-frequency vibration (2x running speed) often indicates coupling misalignment between the pump and motor shafts. This can increase radial load on the bearings and generate heat even when vibration readings remain moderate.\n\nGiven this diagnosis, we should inspect the shaft alignment to ensure it is within tolerance. If necessary, a laser alignment check might be required again to correct any misalignment issues.\n\nDo you want me to create a work order for this inspection?"
+  }
+]

@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: imaint
+      POSTGRES_PASSWORD: imaint_dev_pw
+      POSTGRES_DB: imaint_agent
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U imaint -d imaint_agent"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  cmms:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.cmms
+    ports:
+      - "8111:8001"
+    environment:
+      DATABASE_URL: postgresql+psycopg2://imaint:imaint_dev_pw@postgres:5432/imaint_agent
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  agent:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.agent
+    ports:
+      - "8110:8000"
+    environment:
+      CMMS_BASE_URL: http://cmms:8001
+      OLLAMA_HOST: http://host.docker.internal:11434
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - cmms
+
+volumes:
+  pgdata:

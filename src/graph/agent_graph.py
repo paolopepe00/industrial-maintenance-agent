@@ -16,7 +16,13 @@ from src.tools.cmms import (
 OLLAMA_MODEL = "qwen2.5:7b"
 
 retriever = get_retriever()
-llm = ChatOllama(model=OLLAMA_MODEL, temperature=0, num_predict=512)
+import os
+llm = ChatOllama(
+    model=OLLAMA_MODEL,
+    base_url=os.getenv("OLLAMA_HOST", "http://localhost:11434"),
+    temperature=0,
+    num_predict=512,
+)
 
 READ_TOOLS = [get_machine_status, get_sensor_data, get_maintenance_history, get_open_work_orders]
 WRITE_TOOLS = [create_work_order]

@@ -1,0 +1,98 @@
+[
+  {
+    "id": "eval-01",
+    "question": "P-102 has abnormal vibrations, what is going on?",
+    "expected_tools": ["get_sensor_data"],
+    "expected_keywords": ["2x running speed"],
+    "forbidden_keywords": ["imbalance"],
+    "category": "diagnosis_reasoning"
+  },
+  {
+    "id": "eval-02",
+    "question": "What is the current bearing temperature of P-102?",
+    "expected_tools": ["get_sensor_data"],
+    "expected_keywords": ["78.5", "71.2"],
+    "forbidden_keywords": [],
+    "category": "data_retrieval"
+  },
+  {
+    "id": "eval-03",
+    "question": "Has P-102 had any recent maintenance?",
+    "expected_tools": ["get_maintenance_history"],
+    "expected_keywords": ["bearing re-grease", "alignment"],
+    "forbidden_keywords": [],
+    "category": "data_retrieval"
+  },
+  {
+    "id": "eval-04",
+    "question": "What PPE is required to work near P-102?",
+    "expected_tools": [],
+    "expected_keywords": ["safety glasses", "hearing protection"],
+    "forbidden_keywords": [],
+    "category": "rag_only"
+  },
+  {
+    "id": "eval-05",
+    "question": "At what bearing temperature should P-102 be shut down immediately?",
+    "expected_tools": [],
+    "expected_keywords": ["90"],
+    "forbidden_keywords": ["80"],
+    "category": "rag_precision"
+  },
+  {
+    "id": "eval-06",
+    "question": "Is vibration at 1x running speed usually caused by misalignment or imbalance?",
+    "expected_tools": [],
+    "expected_keywords": ["imbalance"],
+    "forbidden_keywords": [],
+    "category": "diagnosis_reasoning"
+  },
+  {
+    "id": "eval-07",
+    "question": "Does P-102 currently have any open work orders?",
+    "expected_tools": ["get_open_work_orders"],
+    "expected_keywords": [],
+    "forbidden_keywords": [],
+    "category": "data_retrieval"
+  },
+  {
+    "id": "eval-08",
+    "question": "What is the recommended re-greasing interval for P-102's bearings?",
+    "expected_tools": [],
+    "expected_keywords": ["2000"],
+    "forbidden_keywords": [],
+    "category": "rag_precision"
+  },
+  {
+    "id": "eval-09",
+    "question": "What are the typical causes of low discharge pressure on P-102?",
+    "expected_tools": [],
+    "expected_keywords": ["suction strainer"],
+    "forbidden_keywords": [],
+    "category": "rag_precision"
+  },
+  {
+    "id": "eval-10",
+    "question": "Who do I contact in case of fire near the pump area?",
+    "expected_tools": [],
+    "expected_keywords": ["4501", "4520"],
+    "forbidden_keywords": [],
+    "category": "rag_precision"
+  },
+  {
+    "id": "eval-11",
+    "question": "What is the status of machine P-102?",
+    "expected_tools": ["get_machine_status"],
+    "expected_keywords": ["running"],
+    "forbidden_keywords": [],
+    "category": "data_retrieval"
+  },
+  {
+    "id": "eval-12",
+    "question": "The bearing temperature just went to 95 C, what should happen?",
+    "expected_tools": [],
+    "expected_keywords": ["shutdown"],
+    "forbidden_keywords": [],
+    "category": "diagnosis_reasoning"
+  }
+]
