@@ -38,7 +38,12 @@ class ConfirmRequest(BaseModel):
 
 
 def _extract_tool_calls(messages):
-    return [f"{m.name}({m.content[:80]})" for m in messages if isinstance(m, ToolMessage)]
+    last_human = max((i for i, m in enumerate(messages) if isinstance(m, HumanMessage)), default=-1)
+    return [
+        f"{m.name}({m.content[:80]})"
+        for m in messages[last_human + 1:]
+        if isinstance(m, ToolMessage)
+    ]
 
 
 def _check_pending(config):

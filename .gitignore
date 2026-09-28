@@ -2,3 +2,7 @@ __pycache__/
 *.pyc
 .env
 
+.pytest_cache/
+.langgraph_api/
+.ruff_cache/
+*.egg-info/
