@@ -1,0 +1,110 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint (Ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - run: pip install ruff
+      - run: ruff check src cmms tests
+
+  backend-tests:
+    name: Unit e integration test
+    needs: lint
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: imaint
+          POSTGRES_PASSWORD: imaint_ci_pw
+          POSTGRES_DB: imaint_agent
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U imaint -d imaint_agent"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql+psycopg2://imaint:imaint_ci_pw@localhost:5432/imaint_agent
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Unit test
+        run: pytest tests/unit -m "not needs_ollama" -v
+      - name: Seed del database di test
+        run: python -m cmms.seed
+      - name: Integration test
+        run: pytest tests/integration -v
+
+  frontend:
+    name: Frontend (lint e build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+
+  docker-build:
+    name: Build immagini Docker
+    needs: [backend-tests, frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: docker build -f docker/Dockerfile.agent -t imaint-agent:ci .
+      - run: docker build -f docker/Dockerfile.cmms -t imaint-cmms:ci .
+
+  security:
+    name: Controllo vulnerabilità
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install pip-audit
+      - run: pip-audit -r requirements.txt
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - run: npm audit --audit-level=high
+        working-directory: frontend
+
+  deploy:
+    name: Deploy (segnaposto)
+    needs: [docker-build, security]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Il deploy vero arriva con la FASE 14 (AWS)"
