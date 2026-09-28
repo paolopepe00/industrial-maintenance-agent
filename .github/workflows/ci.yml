@@ -94,7 +94,7 @@ jobs:
           python-version: "3.11"
           cache: pip
       - run: pip install pip-audit
-            - name: pip-audit
+      - name: pip-audit
         # chromadb 1.5.9 è l'ultima release e nessun advisory ha una versione fixata.
         # Le CVE riguardano il server HTTP di Chroma; qui è usato solo embedded
         # (persist_directory), senza server esposto. Riesaminare a ogni nuova release.
