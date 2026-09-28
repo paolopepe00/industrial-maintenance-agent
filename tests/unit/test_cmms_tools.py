@@ -1,5 +1,6 @@
-from unittest.mock import patch, Mock
-from src.tools.cmms import get_sensor_data, create_work_order
+from unittest.mock import Mock, patch
+
+from src.tools.cmms import create_work_order, get_sensor_data
 
 
 def test_get_sensor_data_success():

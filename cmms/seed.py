@@ -1,7 +1,8 @@
 import uuid
 from datetime import datetime
-from cmms.database.session import engine, SessionLocal, Base
-from cmms.models.models import Machine, SensorReading, MaintenanceEvent
+
+from cmms.database.session import Base, SessionLocal, engine
+from cmms.models.models import Machine, MaintenanceEvent, SensorReading
 
 Base.metadata.create_all(bind=engine)
 

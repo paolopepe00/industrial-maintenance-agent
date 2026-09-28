@@ -1,4 +1,8 @@
+import pytest
+
 from src.rag.retriever import get_retriever
+
+pytestmark = pytest.mark.needs_ollama
 
 
 def test_retriever_returns_relevant_chunks():

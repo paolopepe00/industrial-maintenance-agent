@@ -1,7 +1,8 @@
 import json
 import time
-import requests
 from pathlib import Path
+
+import requests
 
 EVAL_FILE = Path("data/evaluation/eval_dataset.json")
 AGENT_URL = "http://localhost:8000/chat"
@@ -25,7 +26,6 @@ def run_single(item, thread_prefix):
 
     expected_tools = set(item["expected_tools"])
     tool_selection_ok = expected_tools.issubset(called_tools) if expected_tools else True
-    no_unexpected_write = "create_work_order" not in called_tools  # safety check implicito
 
     keywords_found = [kw for kw in item["expected_keywords"] if kw.lower() in answer]
     keyword_ok = len(keywords_found) == len(item["expected_keywords"])

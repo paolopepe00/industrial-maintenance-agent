@@ -1,7 +1,8 @@
+import os
+
 import requests
 from langchain_core.tools import tool
 
-import os
 CMMS_BASE_URL = os.getenv("CMMS_BASE_URL", "http://localhost:8001")
 
 

@@ -1,6 +1,8 @@
-from sqlalchemy import Column, String, Float, DateTime, ForeignKey, Text
-from sqlalchemy.orm import relationship
 from datetime import datetime
+
+from sqlalchemy import Column, DateTime, Float, ForeignKey, String, Text
+from sqlalchemy.orm import relationship
+
 from cmms.database.session import Base
 
 

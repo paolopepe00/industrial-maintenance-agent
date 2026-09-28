@@ -1,22 +1,25 @@
+import os
 from typing import Annotated
-from typing_extensions import TypedDict, NotRequired
-from langgraph.graph import StateGraph, END
+
+from langchain_core.messages import SystemMessage
+from langchain_ollama import ChatOllama
+from langgraph.graph import END, StateGraph
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode
-from langchain_core.messages import SystemMessage, HumanMessage
-from langchain_ollama import ChatOllama
+from typing_extensions import NotRequired, TypedDict
 
 from src.rag.retriever import get_retriever
-
 from src.tools.cmms import (
-    get_machine_status, get_sensor_data, get_maintenance_history,
-    get_open_work_orders, create_work_order,
+    create_work_order,
+    get_machine_status,
+    get_maintenance_history,
+    get_open_work_orders,
+    get_sensor_data,
 )
 
 OLLAMA_MODEL = "qwen2.5:7b"
 
 retriever = get_retriever()
-import os
 llm = ChatOllama(
     model=OLLAMA_MODEL,
     base_url=os.getenv("OLLAMA_HOST", "http://localhost:11434"),

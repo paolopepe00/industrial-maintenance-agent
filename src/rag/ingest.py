@@ -1,8 +1,9 @@
 from pathlib import Path
+
+from langchain_chroma import Chroma
 from langchain_community.document_loaders import PyPDFLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_ollama import OllamaEmbeddings
-from langchain_chroma import Chroma 
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 DOCS_DIR = Path("docs/manuals")
 PERSIST_DIR = "vector_db"

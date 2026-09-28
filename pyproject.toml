@@ -3,6 +3,13 @@ name = "industrial-maintenance-agent"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = []
+
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
+markers = [
+    "needs_ollama: richiede Ollama e vector_db (non disponibili in CI)",
+]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]

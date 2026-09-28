@@ -1,10 +1,11 @@
-from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy.orm import Session
 import uuid
 from datetime import datetime
 
+from fastapi import Depends, FastAPI, HTTPException
+from sqlalchemy.orm import Session
+
 from cmms.database.session import get_db
-from cmms.models.models import Machine, SensorReading, MaintenanceEvent, WorkOrder
+from cmms.models.models import Machine, MaintenanceEvent, SensorReading, WorkOrder
 
 app = FastAPI(title="CMMS API")
 
