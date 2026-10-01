@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agent
+  namespace: imaint
+spec:
+  replicas: 1   # MemorySaver e' in-memory: con >1 repliche i thread_id si perdono tra pod
+  selector:
+    matchLabels: { app: agent }
+  template:
+    metadata:
+      labels: { app: agent }
+    spec:
+      containers:
+        - name: agent
+          image: imaint-agent:local
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef: { name: imaint-config }
+            - secretRef:
+                name: langsmith-secret
+                optional: true
+          readinessProbe:
+            httpGet: { path: /docs, port: 8000 }
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /docs, port: 8000 }
+            initialDelaySeconds: 40
+            periodSeconds: 20
+          resources:
+            requests: { cpu: 200m, memory: 512Mi }
+            limits: { memory: 1Gi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: agent
+  namespace: imaint
+spec:
+  type: NodePort
+  selector: { app: agent }
+  ports:
+    - port: 8000
+      targetPort: 8000
+      nodePort: 30110

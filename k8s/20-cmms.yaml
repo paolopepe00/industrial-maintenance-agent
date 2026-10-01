@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cmms
+  namespace: imaint
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: cmms }
+  template:
+    metadata:
+      labels: { app: cmms }
+    spec:
+      # aspetta che postgres accetti connessioni
+      initContainers:
+        - name: wait-for-postgres
+          image: postgres:16
+          command: ["sh", "-c", "until pg_isready -h postgres -p 5432; do sleep 2; done"]
+      containers:
+        - name: cmms
+          image: imaint-cmms:local
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8001
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef: { name: postgres-secret, key: DATABASE_URL }
+          readinessProbe:
+            httpGet: { path: /docs, port: 8001 }
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /docs, port: 8001 }
+            initialDelaySeconds: 15
+            periodSeconds: 15
+          resources:
+            requests: { cpu: 50m, memory: 128Mi }
+            limits: { memory: 256Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cmms
+  namespace: imaint
+spec:
+  type: NodePort
+  selector: { app: cmms }
+  ports:
+    - port: 8001
+      targetPort: 8001
+      nodePort: 30111

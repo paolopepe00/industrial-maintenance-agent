@@ -1,0 +1,14 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: imaint
+nodes:
+  - role: control-plane
+    extraPortMappings:
+      # agent (NodePort 30110) -> localhost:8110
+      - containerPort: 30110
+        hostPort: 8110
+        listenAddress: "127.0.0.1"
+      # cmms (NodePort 30111) -> localhost:8111
+      - containerPort: 30111
+        hostPort: 8111
+        listenAddress: "127.0.0.1"
